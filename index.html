@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    <script src="./lib/record.js"></script>
+</head>
+
+<body>
+
+    <video id="video" width="640" height="480" autoplay></video>
+    <button class="recordbutton" onclick="start();">startRecording</button>
+    <button class="recordbutton" onclick="paused();">paused</button>
+    <button class="recordbutton" onclick="resume();">resumeRecording</button>
+    <button class="recordbutton" onclick="stop();">stopRecording</button>
+
+
+</body>
+<script type="text/javascript">
+    //console.log('',Record("video"))
+    //var R = Record("video")
+    //console.log('R', R)
+    //基本使用
+    
+    var R
+
+    function start() {
+        R = Record("video").start()
+    }
+
+    function paused() {
+        R.paused()
+    }
+
+    function resume() {
+        R.resume()
+    }
+
+    /**
+     * 模拟下载到本地 
+     * 
+     */
+    function stop() {
+        R.stop(function (recordRTC) {
+            console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+
+            // 具体的可以将recordRTC.getBlob()  上传到服务器
+            var url = window.URL.createObjectURL(recordRTC.getBlob()) 
+            var a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = url
+            a.download = 'test.webm'
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 100)
+        })
+    }
+</script>
+
+</html>
