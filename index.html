@@ -5,18 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Demo</title>
+    <link href="https://cdn.bootcss.com/Buttons/2.0.0/css/buttons.css" rel="stylesheet">
     <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
     <script src="./lib/record.js"></script>
+    <style ype="text/css">
+        .top {
+            width: 600px;
+            height: 500px;
+            margin: 10px auto;
+            border: 1px solid #d2cff1;
+        }
+
+        .content {
+            text-align: center
+        }
+    </style>
 </head>
 
 <body>
+    <div class="top">
+        <video id="video" autoplay></video>
+    </div>
 
-    <video id="video" width="640" height="480" autoplay></video>
-    <button class="recordbutton" onclick="start();">startRecording</button>
-    <button class="recordbutton" onclick="paused();">paused</button>
-    <button class="recordbutton" onclick="resume();">resumeRecording</button>
-    <button class="recordbutton" onclick="stop();">stopRecording</button>
+
+    <div class="content">
+        <button class="button button-highlight button-large" onclick="start();">startRecording</button>
+        <button class="button button-action button-large" onclick="paused();">pausedRecording</button>
+        <button class="button button-royal button-giant button-large" onclick="resume();">resumeRecording</button>
+        <button class="button button-caution button-jumbo button-large" onclick="stop();">stopRecording</button>
+    </div>
+
 
 
 </body>
@@ -25,7 +44,7 @@
     //var R = Record("video")
     //console.log('R', R)
     //基本使用
-    
+
     var R
 
     function start() {
@@ -49,7 +68,7 @@
             console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
 
             // 具体的可以将recordRTC.getBlob()  上传到服务器
-            var url = window.URL.createObjectURL(recordRTC.getBlob()) 
+            var url = window.URL.createObjectURL(recordRTC.getBlob())
             var a = document.createElement('a')
             a.style.display = 'none'
             a.href = url
