@@ -25,12 +25,23 @@
         .follow {
             text-align: right
         }
+        #video {
+             width: 300px;
+             height: 500px;
+             float: left;
+        }
+       #video1 {
+             width: 300px;
+             height: 500px;;
+              float: left;
+        }
     </style>
 </head>
 
 <body>
     <div class="top">
         <video id="video" autoplay></video>
+         <video id="video1" autoplay></video>
     </div>
 
 
@@ -39,6 +50,13 @@
         <button class="button button-action button-large" onclick="paused();">pausedRecording</button>
         <button class="button button-royal button-giant button-large" onclick="resume();">resumeRecording</button>
         <button class="button button-caution button-jumbo button-large" onclick="stop();">stopRecording</button>
+    </div>
+
+    <div class="content">
+        <button class="button button-highlight button-large" onclick="start1();">startRecording</button>
+        <button class="button button-action button-large" onclick="paused1();">pausedRecording</button>
+        <button class="button button-royal button-giant button-large" onclick="resume1();">resumeRecording</button>
+        <button class="button button-caution button-jumbo button-large" onclick="stop1();">stopRecording</button>
     </div>
 
     <div class="follow">
@@ -54,9 +72,10 @@
     //基本使用
 
     var R
+    var R1
 
     function start() {
-        R = Record("video").start()
+        R = Record("#video").start()
     }
 
     function paused() {
@@ -67,7 +86,7 @@
         R.resume()
     }
 
-    /**
+        /**
      * 模拟下载到本地 
      * 
      */
@@ -89,6 +108,47 @@
             }, 100)
         })
     }
+
+
+
+    var R1
+
+    function start1() {
+        R1 = Record("#video1").start()
+    }
+
+    function paused1() {
+        R1.paused()
+    }
+
+    function resume1() {
+        R1.resume()
+    }
+
+    /**
+     * 模拟下载到本地 
+     * 
+     */
+    function stop1() {
+        R1.stop(function (recordRTC) {
+            console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+
+            // 具体的可以将recordRTC.getBlob()  上传到服务器
+            var url = window.URL.createObjectURL(recordRTC.getBlob())
+            var a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = url
+            a.download = 'test.webm'
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 100)
+        })
+    }
+
+
 </script>
 
 </html>
