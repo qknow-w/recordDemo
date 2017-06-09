@@ -95,17 +95,17 @@
             console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
 
             // 具体的可以将recordRTC.getBlob()  上传到服务器
-            var url = window.URL.createObjectURL(recordRTC.getBlob())
-            var a = document.createElement('a')
-            a.style.display = 'none'
-            a.href = url
-            a.download = 'test.webm'
-            document.body.appendChild(a)
-            a.click()
-            setTimeout(function () {
-                document.body.removeChild(a)
-                window.URL.revokeObjectURL(url)
-            }, 100)
+            // var url = window.URL.createObjectURL(recordRTC.getBlob())
+            // var a = document.createElement('a')
+            // a.style.display = 'none'
+            // a.href = url
+            // a.download = 'test.webm'
+            // document.body.appendChild(a)
+            // a.click()
+            // setTimeout(function () {
+            //     document.body.removeChild(a)
+            //     window.URL.revokeObjectURL(url)
+            // }, 100)
         })
     }
 
@@ -134,17 +134,17 @@
             console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
 
             // 具体的可以将recordRTC.getBlob()  上传到服务器
-            var url = window.URL.createObjectURL(recordRTC.getBlob())
-            var a = document.createElement('a')
-            a.style.display = 'none'
-            a.href = url
-            a.download = 'test.webm'
-            document.body.appendChild(a)
-            a.click()
-            setTimeout(function () {
-                document.body.removeChild(a)
-                window.URL.revokeObjectURL(url)
-            }, 100)
+            // var url = window.URL.createObjectURL(recordRTC.getBlob())
+            // var a = document.createElement('a')
+            // a.style.display = 'none'
+            // a.href = url
+            // a.download = 'test.webm'
+            // document.body.appendChild(a)
+            // a.click()
+            // setTimeout(function () {
+            //     document.body.removeChild(a)
+            //     window.URL.revokeObjectURL(url)
+            // }, 100)
         })
     }
 
