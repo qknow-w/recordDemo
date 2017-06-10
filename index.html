@@ -9,7 +9,7 @@
     <link href="https://cdn.bootcss.com/Buttons/2.0.0/css/buttons.css" rel="stylesheet">
     <link href="http://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
-    <script src="./lib/record.js"></script>
+    <!--<script src="./lib/record.js"></script>-->
     <style ype="text/css">
         .top {
             width: 600px;
@@ -71,82 +71,148 @@
     //console.log('R', R)
     //基本使用
 
-    var R
-    var R1
+ 
+    window.URL = window.URL || window.webkitURL
+    navigator.getUserMedia = navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia
+    var mediaConstraints = { video: true, audio: true }
+    var options = options || {
+        mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9
+        audioBitsPerSecond: 128000,
+        videoBitsPerSecond: 128000,
+        bitsPerSecond: 128000 // if this line is provided, skip above two
+      }
+    
+    var video 
+    var recordRTC
 
     function start() {
-        R = Record("#video").start()
+        video = document.querySelector("#video")
+        if (navigator.getUserMedia) {
+            navigator.getUserMedia(mediaConstraints, successCallback, errorCallback)
+        } else {
+             navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback)
+        }
     }
 
-    function paused() {
-        R.paused()
+    function successCallback (stream) {
+        video.src = window.URL.createObjectURL(stream)
+        recordRTC = window.RecordRTC(stream, options)
+        recordRTC.startRecording()
     }
 
-    function resume() {
-        R.resume()
+    function stop(){
+        recordRTC.stopRecording(function (audioVideoWebMURL) {
+            video.pause()
+            console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+
+        })
     }
+
+    function errorCallback(err){
+        console.log('error', error)
+    }
+
+
+
+    var video1 
+    var recordRTC1
+    function start1() {
+        video1 = document.querySelector("#video1")
+        if (navigator.getUserMedia) {
+            navigator.getUserMedia(mediaConstraints, successCallback1, errorCallback)
+        } else {
+             navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback1).catch(errorCallback)
+        }
+    }
+
+    function successCallback1 (stream) {
+        video1.src = window.URL.createObjectURL(stream)
+        recordRTC1 = window.RecordRTC(stream, options)
+        recordRTC1.startRecording()
+    }
+
+    function stop1(){
+        recordRTC1.stopRecording(function (audioVideoWebMURL) {
+            video1.pause()
+            console.log('recordRTC.getBlob()', recordRTC1.getBlob().size)
+
+        })
+    }
+// R = Record("#video").start()
+   
+
+    // function paused() {
+    //     R.paused()
+    // }
+
+    // function resume() {
+    //     R.resume()
+    // }
 
         /**
      * 模拟下载到本地 
      * 
      */
-    function stop() {
-        R.stop(function (recordRTC) {
-            console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+    // function stop() {
+    //     R.stop('#video',function (recordRTC) {
+    //         console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
 
-            // 具体的可以将recordRTC.getBlob()  上传到服务器
-            // var url = window.URL.createObjectURL(recordRTC.getBlob())
-            // var a = document.createElement('a')
-            // a.style.display = 'none'
-            // a.href = url
-            // a.download = 'test.webm'
-            // document.body.appendChild(a)
-            // a.click()
-            // setTimeout(function () {
-            //     document.body.removeChild(a)
-            //     window.URL.revokeObjectURL(url)
-            // }, 100)
-        })
-    }
+    //         // 具体的可以将recordRTC.getBlob()  上传到服务器
+    //         // var url = window.URL.createObjectURL(recordRTC.getBlob())
+    //         // var a = document.createElement('a')
+    //         // a.style.display = 'none'
+    //         // a.href = url
+    //         // a.download = 'test.webm'
+    //         // document.body.appendChild(a)
+    //         // a.click()
+    //         // setTimeout(function () {
+    //         //     document.body.removeChild(a)
+    //         //     window.URL.revokeObjectURL(url)
+    //         // }, 100)
+    //     })
+    // }
 
 
 
-    var R1
+    // var R1
 
-    function start1() {
-        R1 = Record("#video1").start()
-    }
+    // function start1() {
+    //     R1 = Record("#video1").start()
+    // }
 
-    function paused1() {
-        R1.paused()
-    }
+    // function paused1() {
+    //     R1.paused()
+    // }
 
-    function resume1() {
-        R1.resume()
-    }
+    // function resume1() {
+    //     R1.resume()
+    // }
 
     /**
      * 模拟下载到本地 
      * 
      */
-    function stop1() {
-        R1.stop(function (recordRTC) {
-            console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+    // function stop1() {
+    //     R1.stop('#video1',function (recordRTC) {
+    //         console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
 
-            // 具体的可以将recordRTC.getBlob()  上传到服务器
-            // var url = window.URL.createObjectURL(recordRTC.getBlob())
-            // var a = document.createElement('a')
-            // a.style.display = 'none'
-            // a.href = url
-            // a.download = 'test.webm'
-            // document.body.appendChild(a)
-            // a.click()
-            // setTimeout(function () {
-            //     document.body.removeChild(a)
-            //     window.URL.revokeObjectURL(url)
-            // }, 100)
-        })
-    }
+    //         // 具体的可以将recordRTC.getBlob()  上传到服务器
+    //         // var url = window.URL.createObjectURL(recordRTC.getBlob())
+    //         // var a = document.createElement('a')
+    //         // a.style.display = 'none'
+    //         // a.href = url
+    //         // a.download = 'test.webm'
+    //         // document.body.appendChild(a)
+    //         // a.click()
+    //         // setTimeout(function () {
+    //         //     document.body.removeChild(a)
+    //         //     window.URL.revokeObjectURL(url)
+    //         // }, 100)
+    //     })
+    // }
 
 
 </script>
