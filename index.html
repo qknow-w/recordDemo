@@ -8,8 +8,7 @@
     <title>Demo</title>
     <link href="https://cdn.bootcss.com/Buttons/2.0.0/css/buttons.css" rel="stylesheet">
     <link href="http://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
-    <!--<script src="./lib/record.js"></script>-->
+    <script src="lib/RecordRTC.js"></script>
     <style ype="text/css">
         .top {
             width: 600px;
@@ -47,16 +46,17 @@
 
     <div class="content">
         <button class="button button-highlight button-large" onclick="start();">startRecording</button>
-        <button class="button button-action button-large" onclick="paused();">pausedRecording</button>
-        <button class="button button-royal button-giant button-large" onclick="resume();">resumeRecording</button>
-        <button class="button button-caution button-jumbo button-large" onclick="stop();">stopRecording</button>
+        <!--<button class="button button-action button-large" onclick="paused();">pausedRecording</button>
+        <button class="button button-royal button-giant button-large" onclick="resume();">resumeRecording</button>-->
+        <button class="button button-highlight button-large" onclick="start1();">startRecording</button>
     </div>
 
     <div class="content">
-        <button class="button button-highlight button-large" onclick="start1();">startRecording</button>
-        <button class="button button-action button-large" onclick="paused1();">pausedRecording</button>
+
+        <button class="button button-caution button-jumbo button-large" onclick="stop();">stopRecording</button>
+        <!--<button class="button button-action button-large" onclick="paused1();">pausedRecording</button>
         <button class="button button-royal button-giant button-large" onclick="resume1();">resumeRecording</button>
-        <button class="button button-caution button-jumbo button-large" onclick="stop1();">stopRecording</button>
+        <button class="button button-caution button-jumbo button-large" onclick="stop1();">stopRecording</button>-->
     </div>
 
     <div class="follow">
@@ -66,12 +66,8 @@
 
 </body>
 <script type="text/javascript">
-    //console.log('',Record("video"))
-    //var R = Record("video")
-    //console.log('R', R)
-    //基本使用
+    var allCameraStreams = []
 
- 
     window.URL = window.URL || window.webkitURL
     navigator.getUserMedia = navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
@@ -90,24 +86,71 @@
 
     function start() {
         video = document.querySelector("#video")
-        if (navigator.getUserMedia) {
-            navigator.getUserMedia(mediaConstraints, successCallback, errorCallback)
-        } else {
-             navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback)
-        }
+        navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback)
+        
+        // if (navigator.getUserMedia) {
+        //     navigator.getUserMedia(mediaConstraints, successCallback, errorCallback)
+        // } else {
+        //      navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback)
+        // }
     }
 
     function successCallback (stream) {
+        console.log('stream',stream)
         video.src = window.URL.createObjectURL(stream)
-        recordRTC = window.RecordRTC(stream, options)
+        recordRTC = new RecordRTC(stream, options)
+        console.log('recordRTC',recordRTC)
+        allCameraStreams.push(stream)
         recordRTC.startRecording()
+        // recordRTC.stopRecording(function() {
+        //    // recordRTC.getBlob();
+        //    console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+
+        // })
     }
 
     function stop(){
-        recordRTC.stopRecording(function (audioVideoWebMURL) {
-            video.pause()
+        // stop recordRTC
+        recordRTC.stopRecording(function(){
             console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
+                //         // 具体的可以将recordRTC.getBlob()  上传到服务器
+            var url = window.URL.createObjectURL(recordRTC.getBlob())
+            var a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = url
+            a.download = 'test.webm'
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 100)
+        })
 
+        // stop recordRTC1
+        recordRTC1.stopRecording(function(){
+            console.log('recordRTC1.getBlob()', recordRTC1.getBlob().size)
+            var url = window.URL.createObjectURL(recordRTC1.getBlob())
+            var a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = url
+            a.download = 'test.webm'
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+            }, 100)
+        })
+
+        // stop video
+        allCameraStreams.forEach(function(stream){          
+            stream.getVideoTracks().forEach(function(track) {
+                        track.stop();
+                    });
+            stream.getAudioTracks().forEach(function(track) {
+                track.stop();
+            });
         })
     }
 
@@ -120,6 +163,7 @@
     var video1 
     var recordRTC1
     function start1() {
+
         video1 = document.querySelector("#video1")
         if (navigator.getUserMedia) {
             navigator.getUserMedia(mediaConstraints, successCallback1, errorCallback)
@@ -129,90 +173,12 @@
     }
 
     function successCallback1 (stream) {
+        console.log('stream',stream)
         video1.src = window.URL.createObjectURL(stream)
-        recordRTC1 = window.RecordRTC(stream, options)
+        recordRTC1 = new RecordRTC(stream, options)
+        allCameraStreams.push(stream)
         recordRTC1.startRecording()
     }
-
-    function stop1(){
-        recordRTC1.stopRecording(function (audioVideoWebMURL) {
-            video1.pause()
-            console.log('recordRTC.getBlob()', recordRTC1.getBlob().size)
-
-        })
-    }
-// R = Record("#video").start()
-   
-
-    // function paused() {
-    //     R.paused()
-    // }
-
-    // function resume() {
-    //     R.resume()
-    // }
-
-        /**
-     * 模拟下载到本地 
-     * 
-     */
-    // function stop() {
-    //     R.stop('#video',function (recordRTC) {
-    //         console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
-
-    //         // 具体的可以将recordRTC.getBlob()  上传到服务器
-    //         // var url = window.URL.createObjectURL(recordRTC.getBlob())
-    //         // var a = document.createElement('a')
-    //         // a.style.display = 'none'
-    //         // a.href = url
-    //         // a.download = 'test.webm'
-    //         // document.body.appendChild(a)
-    //         // a.click()
-    //         // setTimeout(function () {
-    //         //     document.body.removeChild(a)
-    //         //     window.URL.revokeObjectURL(url)
-    //         // }, 100)
-    //     })
-    // }
-
-
-
-    // var R1
-
-    // function start1() {
-    //     R1 = Record("#video1").start()
-    // }
-
-    // function paused1() {
-    //     R1.paused()
-    // }
-
-    // function resume1() {
-    //     R1.resume()
-    // }
-
-    /**
-     * 模拟下载到本地 
-     * 
-     */
-    // function stop1() {
-    //     R1.stop('#video1',function (recordRTC) {
-    //         console.log('recordRTC.getBlob()', recordRTC.getBlob().size)
-
-    //         // 具体的可以将recordRTC.getBlob()  上传到服务器
-    //         // var url = window.URL.createObjectURL(recordRTC.getBlob())
-    //         // var a = document.createElement('a')
-    //         // a.style.display = 'none'
-    //         // a.href = url
-    //         // a.download = 'test.webm'
-    //         // document.body.appendChild(a)
-    //         // a.click()
-    //         // setTimeout(function () {
-    //         //     document.body.removeChild(a)
-    //         //     window.URL.revokeObjectURL(url)
-    //         // }, 100)
-    //     })
-    // }
 
 
 </script>
